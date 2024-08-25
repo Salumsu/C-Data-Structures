@@ -27,15 +27,11 @@ int main() {
 	append_val(&head, 7);
 	append_val(&head, 2);
 
-	Node* popped = pop(&head);
-	printf("Popped: %d\n", popped->val);
 	print_nodes(head);
-	// sort_nodes(&head);
-	// printf("===========\n");
-
-	// remove_at(&head, 1);
+	sort_nodes(&head);
+	printf("===========\n");
 	
-	// print_nodes(head);
+	print_nodes(head);
 
 	return 0;
 }
@@ -43,7 +39,7 @@ int main() {
 
 Node* create_node (int val) {
 	Node* node = (Node*)malloc(sizeof(Node));
-	if (node == NULL) {
+	if (is_empty(node)) {
 		return NULL;
 	}
 
@@ -53,11 +49,11 @@ Node* create_node (int val) {
 }
 
 void print_nodes (Node* curr) {
-	if (curr == NULL) {
+	if (is_empty(curr)) {
 		printf("Empty\n");
 		return;
 	}
-	while (curr != NULL) {
+	while (!is_empty(curr)) {
 		printf("%d\n", curr->val);
 		curr = curr->next;
 	}
@@ -66,12 +62,12 @@ void print_nodes (Node* curr) {
 void append_val(Node** linked_list, int val) {
 	Node* curr = (Node*)*linked_list; // HEAD
 	Node* new_node = create_node(val);
-	if (curr == NULL) {
+	if (is_empty(curr)) {
 		*linked_list = new_node;
 		return;
 	}
 
-	while (curr->next != NULL) {
+	while (!is_empty(curr->next)) {
 		curr = curr->next;
 	}
 
@@ -91,14 +87,14 @@ void insert_at(Node** linked_list, int index, int val) {
 	}
 	Node* new_node = create_node(val);
 	Node* curr = (Node*)*linked_list; // HEAD
-	if (curr == NULL) {
+	if (is_empty(curr)) {
 		*linked_list = new_node;
 		return;
 	}
 
 	int current_index = 0;
 	Node* prev = NULL;
-	while (current_index < index && curr != NULL ) {
+	while (current_index < index && !is_empty(curr)) {
 		prev = curr;
 		curr =  curr->next;
 		current_index++;
@@ -109,7 +105,7 @@ void insert_at(Node** linked_list, int index, int val) {
 		return;
 	}
 
-	if (prev == NULL) {
+	if (is_empty(prev)) {
 		new_node->next = (Node*)*linked_list;
 		*linked_list = new_node;
 	} else {
@@ -125,12 +121,12 @@ void remove_at(Node** linked_list, int index) {
 	}
 	Node* curr = (Node*)*linked_list; // HEAD
 
-	if (curr == NULL) return;
+	if (is_empty(curr)) return;
 
 	Node* prev = NULL;
 	int current_index = 0;
 
-	while (current_index < index && curr != NULL) {
+	while (current_index < index && !is_empty(curr)) {
 		prev = curr;
 		curr = curr->next;
 		current_index++;
@@ -141,8 +137,8 @@ void remove_at(Node** linked_list, int index) {
 		return;
 	}
 
-	if (curr != NULL) {
-		if (prev == NULL) {
+	if (!is_empty(curr)) {
+		if (is_empty(prev)) {
 			*linked_list = curr->next;
 		} else {
 			prev->next = curr->next;
@@ -153,15 +149,15 @@ void remove_at(Node** linked_list, int index) {
 
 Node* pop (Node** linked_list) {
 	Node* curr = (Node*)*linked_list; // HEAD
-	if (curr == NULL) return NULL;
+	if (is_empty(curr)) return NULL;
 
 	Node* prev = NULL;
-	while (curr->next != NULL) {
+	while (!is_empty(curr->next)) {
 		prev = curr;
 		curr = curr->next;
 	}
 
-	if (prev == NULL) {
+	if (is_empty(prev)) {
 		*linked_list = NULL;
 	} else {
 		prev->next = NULL;
@@ -174,7 +170,7 @@ void sort_vals (Node* head) {
 	while (!is_sorted) {
 		Node* curr = head;
 		is_sorted = true;
-		while (curr->next != NULL) {
+		while (!is_empty(curr->next)) {
 			if (curr->val > curr->next->val) {
 				is_sorted = false;
 				int temp = curr->val;
@@ -192,13 +188,13 @@ void sort_nodes (Node** linked_list) {
 		Node* curr = (Node*)*linked_list; // HEAD
 		Node* prev = NULL;
 		isSorted = true;
-		while (curr->next != NULL) {
+		while (!is_empty(curr->next)) {
 			if (curr->val > curr->next->val) {
 				isSorted = false;
 				Node* next = curr->next;
 				curr->next = next->next;
 				next->next = curr;
-				if (prev == NULL) {
+				if (is_empty(prev)) {
 					*linked_list = next;
 				} else {
 					prev->next = next;
