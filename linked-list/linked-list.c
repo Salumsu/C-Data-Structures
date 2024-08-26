@@ -258,19 +258,16 @@ void merge_lists(Node** list1, Node** list2) {
 
 void reverse_list(Node** linked_list) {
 	Node* curr = (Node*)*linked_list;
-	if (curr == NULL) return;
+	Node* prev = NULL;
+	Node* temp = NULL;
 
-	Node* prev = curr;
-	curr = curr->next;
-	prev->next = NULL;
-
-	while (curr->next != NULL) {
-		Node* temp = curr->next;
+	while (curr != NULL) {
+		temp = curr->next;
 		curr->next = prev;
+
 		prev = curr;
 		curr = temp;
 	}
-	curr->next = prev;
 
-	*linked_list = curr;
+	*linked_list = prev;
 }
