@@ -82,8 +82,9 @@ void prepend_val(Node** linked_list, int val) {
 
 void insert_at(Node** linked_list, int index, int val) {
 	if (index < 0) {
-		// INDEX OUT OF BOUNDS
-		return;
+		errno = ERANGE;
+        perror("Index out of bounds");
+        exit(EXIT_FAILURE);
 	}
 	Node* new_node = create_node(val);
 	Node* curr = (Node*)*linked_list; // HEAD
@@ -101,8 +102,9 @@ void insert_at(Node** linked_list, int index, int val) {
 	}
 
 	if (current_index < index) {
-		// INDEX OUT OF BOUNDS
-		return;
+		errno = ERANGE;
+        perror("Index out of bounds");
+        exit(EXIT_FAILURE);
 	}
 
 	if (is_empty(prev)) {
@@ -116,8 +118,9 @@ void insert_at(Node** linked_list, int index, int val) {
 
 void remove_at(Node** linked_list, int index) {
 	if (index < 0) {
-		// INDEX OUT OF BOUNDS
-		return;
+		errno = ERANGE;
+        perror("Index out of bounds");
+        exit(EXIT_FAILURE);
 	}
 	Node* curr = (Node*)*linked_list; // HEAD
 
@@ -133,8 +136,9 @@ void remove_at(Node** linked_list, int index) {
 	}
 
 	if (current_index < index) {
-		// INDEX OUT OF BOUNDS
-		return;
+		errno = ERANGE;
+        perror("Index out of bounds");
+        exit(EXIT_FAILURE);
 	}
 
 	if (!is_empty(curr)) {
