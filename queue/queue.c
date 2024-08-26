@@ -24,7 +24,7 @@ void enqueue(Queue* queue, int val) {
 		if (new_arr == NULL) {
 			errno = ENOMEM; 
 			perror("Memory allocation failed");
-			exit(EXIT_FAILURE); 
+			return;
 		}
 
 		queue->arr = new_arr;
@@ -40,12 +40,11 @@ void display_queue(Queue* queue) {
 	}
 }
 
-
 int dequeue(Queue* queue) {
 	if (is_empty(queue)) {
 		errno = ERANGE; 
 		perror("Empty Queue");
-		exit(EXIT_FAILURE); 
+		return -1;
 	}
 
 	int val = queue->arr[queue->front++];

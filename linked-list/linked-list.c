@@ -50,7 +50,7 @@ void insert_at(Node** linked_list, int index, int val) {
 	if (index < 0) {
 		errno = ERANGE;
         perror("Index out of bounds");
-        exit(EXIT_FAILURE);
+        return;
 	}
 	Node* new_node = create_node(val);
 	Node* curr = (Node*)*linked_list; // HEAD
@@ -70,7 +70,7 @@ void insert_at(Node** linked_list, int index, int val) {
 	if (current_index < index) {
 		errno = ERANGE;
         perror("Index out of bounds");
-        exit(EXIT_FAILURE);
+        return;
 	}
 
 	if (prev == NULL) {

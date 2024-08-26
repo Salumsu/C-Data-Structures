@@ -95,7 +95,7 @@ void remove_at (Node** linked_list, int index) {
 	if (index < 0) {
 		errno = ERANGE;
         perror("Index out of bounds");
-        exit(EXIT_FAILURE);
+        return;
 	}
 
 	Node* curr = (Node*)*linked_list;
@@ -110,7 +110,7 @@ void remove_at (Node** linked_list, int index) {
 	if (curr == NULL) {
 		errno = ERANGE;
         perror("Index out of bounds");
-        exit(EXIT_FAILURE);
+        return;
 	}
 
 	Node* prev = curr->prev;
