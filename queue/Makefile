@@ -3,7 +3,7 @@ CC = gcc
 CFLAGS = -Iinclude -Wall -Wextra -std=c11
 
 # Define the target executable
-TARGET = doubly-linked-list-test
+TARGET = queue-test
 
 # Define the source files and object files
 SRC = $(wildcard ./*.c)
