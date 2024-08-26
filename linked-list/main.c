@@ -1,217 +1,214 @@
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
+#include "linked-list.h"
 
-typedef struct Node {
-	int val;
-	struct Node* next;
-} Node;
-
-Node* create_node (int val);
-void print_nodes (Node* curr);
-void append_val(Node** linked_list, int val);
-void prepend_val(Node** linked_list, int val);
-void insert_at(Node** linked_list, int index, int val);
-void remove_at(Node** linked_list, int index);
-Node* pop (Node** linked_list);
-void sort_vals (Node* curr);
-void sort_nodes (Node** linked_list);
-bool is_empty (Node* head);
-
+void test_create_node();
+void test_print_nodes();
+void test_append_val();
+void test_prepend_val();
+void test_insert_at();
+void test_remove_at();
+void test_pop();
+void test_sort_vals();
+void test_sort_nodes();
+void test_count_nodes();
+void test_find_by_value();
+void test_get_node_at();
+void test_find_middle();
+void test_find_middle_even();
+void test_clone_list();
+void test_merge_lists();
+void test_reverse_list();
 
 int main() {
-	Node* head = create_node(5);
+    // Run all tests
+    test_create_node();
+    test_print_nodes();
+    test_append_val();
+    test_prepend_val();
+    test_insert_at();
+    test_remove_at();
+    test_pop();
+    test_sort_vals();
+    test_sort_nodes();
+    test_count_nodes();
+    test_find_by_value();
+    test_get_node_at();
+    test_find_middle();
+    test_find_middle_even();
+    test_clone_list();
+    test_merge_lists();
+    test_reverse_list();
 
-	append_val(&head, 1);
-	append_val(&head, 3);
-	append_val(&head, 7);
-	append_val(&head, 2);
-
-	print_nodes(head);
-	sort_nodes(&head);
-	printf("===========\n");
-	
-	print_nodes(head);
-
-	return 0;
+    return 0;
 }
 
-
-Node* create_node (int val) {
-	Node* node = (Node*)malloc(sizeof(Node));
-	if (is_empty(node)) {
-		return NULL;
-	}
-
-	node->val = val;
-	node->next = NULL;
-	return node;
+void test_create_node() {
+    Node* node = create_node(10);
+    printf("\n================\nTest: Create Node\n");
+    printf("Expected: 10\n");
+    printf("Actual: %d\n", node->val);
+    free(node);
 }
 
-void print_nodes (Node* curr) {
-	if (is_empty(curr)) {
-		printf("Empty\n");
-		return;
-	}
-	while (!is_empty(curr)) {
-		printf("%d\n", curr->val);
-		curr = curr->next;
-	}
+void test_print_nodes() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    append_val(&head, 3);
+    printf("\n================\nTest: Print Nodes\n");
+	printf("Should print: 1 2 3\n");
+    print_nodes(head); 
 }
 
-void append_val(Node** linked_list, int val) {
-	Node* curr = (Node*)*linked_list; // HEAD
-	Node* new_node = create_node(val);
-	if (is_empty(curr)) {
-		*linked_list = new_node;
-		return;
-	}
-
-	while (!is_empty(curr->next)) {
-		curr = curr->next;
-	}
-
-	curr->next = new_node;
+void test_append_val() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    append_val(&head, 3);
+    printf("\n================\nTest: Append Value\n");
+	printf("Should print: 1 2 3\n");
+    print_nodes(head);
 }
 
-void prepend_val(Node** linked_list, int val) {
-	Node* new_head = create_node(val);
-	new_head->next = ((Node*)*linked_list);
-	*linked_list = new_head;
+void test_prepend_val() {
+    Node* head = create_node(1);
+    prepend_val(&head, 0);
+    prepend_val(&head, -1);
+    printf("\n================\nTest: Prepend Value\n");
+	printf("Should print: -1 0 1\n");
+    print_nodes(head);
 }
 
-void insert_at(Node** linked_list, int index, int val) {
-	if (index < 0) {
-		errno = ERANGE;
-        perror("Index out of bounds");
-        exit(EXIT_FAILURE);
-	}
-	Node* new_node = create_node(val);
-	Node* curr = (Node*)*linked_list; // HEAD
-	if (is_empty(curr)) {
-		*linked_list = new_node;
-		return;
-	}
-
-	int current_index = 0;
-	Node* prev = NULL;
-	while (current_index < index && !is_empty(curr)) {
-		prev = curr;
-		curr =  curr->next;
-		current_index++;
-	}
-
-	if (current_index < index) {
-		errno = ERANGE;
-        perror("Index out of bounds");
-        exit(EXIT_FAILURE);
-	}
-
-	if (is_empty(prev)) {
-		new_node->next = (Node*)*linked_list;
-		*linked_list = new_node;
-	} else {
-		new_node->next = curr;
-		prev->next = new_node;
-	}
+void test_insert_at() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    append_val(&head, 4);
+    insert_at(&head, 2, 3);
+    printf("\n================\nTest: Insert At\n");
+	printf("Should print: 1 2 3 4\n");
+    print_nodes(head); 
 }
 
-void remove_at(Node** linked_list, int index) {
-	if (index < 0) {
-		errno = ERANGE;
-        perror("Index out of bounds");
-        exit(EXIT_FAILURE);
-	}
-	Node* curr = (Node*)*linked_list; // HEAD
-
-	if (is_empty(curr)) return;
-
-	Node* prev = NULL;
-	int current_index = 0;
-
-	while (current_index < index && !is_empty(curr)) {
-		prev = curr;
-		curr = curr->next;
-		current_index++;
-	}
-
-	if (current_index < index) {
-		errno = ERANGE;
-        perror("Index out of bounds");
-        exit(EXIT_FAILURE);
-	}
-
-	if (!is_empty(curr)) {
-		if (is_empty(prev)) {
-			*linked_list = curr->next;
-		} else {
-			prev->next = curr->next;
-			free(curr);
-		}
-	} 
+void test_remove_at() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    append_val(&head, 3);
+    remove_at(&head, 1);
+    printf("\n================\nTest: Remove At\n");
+	printf("Should print: 1 3\n");
+    print_nodes(head); 
 }
 
-Node* pop (Node** linked_list) {
-	Node* curr = (Node*)*linked_list; // HEAD
-	if (is_empty(curr)) return NULL;
+void test_pop() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    Node* popped = pop(&head);
+    printf("\n================\nTest: Pop\n");
+    printf("Expected: 2\n");
+    printf("Actual: %d\n", popped ? popped->val : -1);
+	printf("Should print: 1\n");
 
-	Node* prev = NULL;
-	while (!is_empty(curr->next)) {
-		prev = curr;
-		curr = curr->next;
-	}
-
-	if (is_empty(prev)) {
-		*linked_list = NULL;
-	} else {
-		prev->next = NULL;
-	}
-	return curr;
+    print_nodes(head);
 }
 
-void sort_vals (Node* head) {
-	bool is_sorted = false;
-	while (!is_sorted) {
-		Node* curr = head;
-		is_sorted = true;
-		while (!is_empty(curr->next)) {
-			if (curr->val > curr->next->val) {
-				is_sorted = false;
-				int temp = curr->val;
-				curr->val = curr->next->val;
-				curr->next->val = temp;
-			}
-			curr = curr->next;
-		}
-	}
+void test_sort_vals() {
+    Node* head = create_node(3);
+    append_val(&head, 1);
+    append_val(&head, 2);
+    sort_vals(head);
+    printf("\n================\nTest: Sort Values\n");
+	printf("Should print: 1 2 3\n");
+    print_nodes(head); 
 }
 
-void sort_nodes (Node** linked_list) {
-	bool isSorted = false;
-	while (!isSorted) {
-		Node* curr = (Node*)*linked_list; // HEAD
-		Node* prev = NULL;
-		isSorted = true;
-		while (!is_empty(curr->next)) {
-			if (curr->val > curr->next->val) {
-				isSorted = false;
-				Node* next = curr->next;
-				curr->next = next->next;
-				next->next = curr;
-				if (is_empty(prev)) {
-					*linked_list = next;
-				} else {
-					prev->next = next;
-				}
-				prev = next;
-			} else {
-				prev = curr;
-				curr = curr->next;
-			}
-		}
-	}
+void test_sort_nodes() {
+    Node* head = create_node(3);
+    append_val(&head, 1);
+    append_val(&head, 2);
+    sort_nodes(&head);
+    printf("\n================\nTest: Sort Nodes\n");
+	printf("Should print: 1 2 3\n");
+    print_nodes(head); 
 }
 
-bool is_empty (Node* head) {
-	return head == NULL;
+void test_count_nodes() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    append_val(&head, 3);
+    printf("\n================\nTest: Count Nodes\n");
+    printf("Expected: 3\n");
+    printf("Actual: %d\n", count_nodes(head));
+}
+
+void test_find_by_value() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    append_val(&head, 3);
+    Node* found = find_by_value(head, 2);
+    printf("\n================\nTest: Find By Value\n");
+    printf("Expected: 2\n");
+    printf("Actual: %d\n", found ? found->val : -1);
+}
+
+void test_get_node_at() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    append_val(&head, 3);
+    Node* node = get_node_at(head, 1);
+    printf("\n================\nTest: Get Node At\n");
+    printf("Expected: 2\n");
+    printf("Actual: %d\n", node ? node->val : -1);
+}
+
+void test_find_middle() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    append_val(&head, 3);
+    append_val(&head, 4);
+    append_val(&head, 5);
+    Node* middle = find_middle(head);
+    printf("\n================\nTest: Find Middle\n");
+    printf("Expected: 3\n");
+    printf("Actual: %d\n", middle ? middle->val : -1);
+}
+
+void test_find_middle_even() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    append_val(&head, 3);
+    append_val(&head, 4);
+    Node* middle = find_middle(head);
+    printf("\n================\nTest: Find Middle (Even)\n");
+    printf("Expected: 2\n");
+    printf("Actual: %d\n", middle ? middle->val : -1);
+}
+
+void test_clone_list() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    append_val(&head, 3);
+    Node* cloned = clone_list(head);
+    printf("\n================\nTest: Clone List\n");
+    print_nodes(cloned); // Should print: 1 2 3
+}
+
+void test_merge_lists() {
+    Node* list1 = create_node(1);
+    append_val(&list1, 2);
+    Node* list2 = create_node(3);
+    append_val(&list2, 4);
+    merge_lists(&list1, &list2);
+    printf("\n================\nTest: Merge Lists\n");
+	printf("Should print: 1 2 3 4\n");
+    print_nodes(list1);
+}
+
+void test_reverse_list() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    append_val(&head, 3);
+    reverse_list(&head);
+    printf("\n================\nTest: Reverse List\n");
+	printf("Should print: 3 2 1\n");
+    print_nodes(head); 
 }
