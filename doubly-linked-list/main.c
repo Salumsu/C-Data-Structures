@@ -1,235 +1,201 @@
-#include <stdlib.h>
 #include <stdio.h>
-#include <stdbool.h>
+#include <stdlib.h>
+#include "doubly-linked-list.h"
 
-typedef struct Node {
-	int val;
-	struct Node* next;
-	struct Node* prev;
-} Node;
+// Function Definitions
+void test_create_node();
+void test_append_val();
+void test_prepend_val();
+void test_insert_at();
+void test_remove_at();
+void test_pop();
+void test_sort_vals();
+void test_sort_nodes();
+void test_count_nodes();
+void test_find_by_value();
+void test_get_node_at();
+void test_find_middle();
+void test_clone_list();
+void test_merge_lists();
+void test_reverse_list();
 
-Node* create_node (int val);
-void print_nodes (Node* curr);
-void append_val(Node** linked_list, int val);
-void prepend_val(Node** linked_list, int val);
-void insert_at(Node** linked_list, int index, int val);
-void remove_at(Node** linked_list, int index);
-Node* pop (Node** linked_list);
-void sort_vals (Node* curr);
-void sort_nodes (Node** linked_list);
-bool is_empty (Node* head);
+// Main function
+int main() {
+    test_create_node();
+    test_append_val();
+    test_prepend_val();
+    test_insert_at();
+    test_remove_at();
+    test_pop();
+    test_sort_vals();
+    test_sort_nodes();
+    test_count_nodes();
+    test_find_by_value();
+    test_get_node_at();
+    test_find_middle();
+    test_clone_list();
+    test_merge_lists();
+    test_reverse_list();
 
-int main () {
-	Node* head = create_node(5);
-	append_val(&head, 4);
-	append_val(&head, 7);
-	append_val(&head, 1);
-	insert_at(&head, 0, 0);
-	print_nodes(head);
-	printf("============\n");
-	sort_nodes(&head);
-	print_nodes(head);
-
-
-	return 0;
+    return 0;
 }
 
-Node* create_node (int val) {
-	Node* node = (Node*)malloc(sizeof(Node));
-	node->val = val;
-	node->next = NULL;
-	node->prev = NULL;
-
-	return node;
+// Function Implementations
+void test_create_node() {
+    Node* node = create_node(10);
+    printf("\n===============\nTest create_node: Expected 10, got %d\n", node->val);
+    free(node);
 }
 
-void print_nodes(Node* curr) {
-	if (is_empty(curr)) return;
-	while (!is_empty(curr->next)) {
-		printf("%d\n", curr->val);
-		curr = curr->next;
-	}
-
-	printf("%d <>\n", curr->val);
-	curr = curr->prev;
-
-	while (!is_empty(curr)) {
-		printf("%d\n", curr->val);
-		curr = curr->prev;
-	}
+void test_append_val() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    append_val(&head, 3);
+    printf("\n===============\nTest append_val: Expected (1, 2, 3), got\n");
+    print_nodes(head);
+    free(head->next->next);
+    free(head->next);
+    free(head);
 }
 
-void append_val (Node** linked_list, int val) {
-	Node* new_node = create_node(val);
-	Node* curr = (Node*)*linked_list;
-	if (is_empty(curr)) {
-		*linked_list = new_node;
-		return;
-	}
-
-	while (!is_empty(curr->next)) {
-		curr = curr->next;
-	}
-
-	curr->next = new_node;
-	new_node->prev = curr;
+void test_prepend_val() {
+    Node* head = create_node(1);
+    prepend_val(&head, 0);
+    printf("\n===============\nTest prepend_val: Expected (0, 1), got\n");
+    print_nodes(head);
+    free(head->next);
+    free(head);
 }
 
-void prepend_val (Node** linked_list, int val) {
-	Node* new_head = create_node(val);
-	Node* prev_head = (Node*)*linked_list; 
-	new_head->next = prev_head;
-	*linked_list = new_head;
-	if (!is_empty(prev_head)) {
-		prev_head->prev = new_head;
-	}
+void test_insert_at() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    insert_at(&head, 1, 3);
+    printf("\n===============\nTest insert_at: Expected (1, 3, 2), got\n");
+    print_nodes(head);
+    free(head->next->next);
+    free(head->next);
+    free(head);
 }
 
-void insert_at (Node** linked_list, int index, int val) {
-	if (index < 0) {
-		errno = ERANGE;
-        perror("Index out of bounds");
-        exit(EXIT_FAILURE);
-	}
-	Node* new_node = create_node(val);
-	Node* curr = (Node*)*linked_list;
-	if (is_empty(curr)) {
-		*linked_list = new_node;
-		return;
-	}
-
-	int current_index = 0;
-	while (current_index < index && !is_empty(curr)) {
-		curr = curr->next;
-		current_index++;
-	}
-
-	if (is_empty(curr)) {
-		errno = ERANGE;
-        perror("Index out of bounds");
-        exit(EXIT_FAILURE);
-	}
-
-	Node* prev = curr->prev;
-	if (is_empty(prev)) {
-		curr->prev = new_node;
-		new_node->next = curr;
-		*linked_list = new_node;
-	} else {
-		prev->next = new_node;
-		new_node->prev = prev;
-		new_node->next = curr;
-		curr->prev = new_node;
-	}
+void test_remove_at() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    append_val(&head, 3);
+    remove_at(&head, 1);
+    printf("\n===============\nTest remove_at: Expected (1, 3), got\n");
+    print_nodes(head);
+    free(head->next);
+    free(head);
 }
 
-void remove_at (Node** linked_list, int index) {
-	if (index < 0) {
-		errno = ERANGE;
-        perror("Index out of bounds");
-        exit(EXIT_FAILURE);
-	}
-
-	Node* curr = (Node*)*linked_list;
-	if (is_empty(curr)) return;
-
-	int current_index = 0;
-	while (current_index < index && !is_empty(curr)) {
-		curr = curr->next;
-		current_index++;
-	}
-
-	if (is_empty(curr)) {
-		errno = ERANGE;
-        perror("Index out of bounds");
-        exit(EXIT_FAILURE);
-	}
-
-	Node* prev = curr->prev;
-
-	if (is_empty(prev)) {
-		*linked_list = curr->next;
-	} else {
-		prev->next = curr->next;
-	} 
-
-	if (curr->next != NULL) {
-		curr->next->prev = prev;
-	}
-	free(curr);
+void test_pop() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    Node* popped = pop(&head);
+    printf("\n===============\nTest pop: Expected 2, got %d\n", popped->val);
+    printf("Test pop: Expected (1), got \n");
+    print_nodes(head);
+    free(popped);
+    free(head);
 }
 
-Node* pop (Node** linked_list) {
-	Node* curr = (Node*)*linked_list;
-	if (is_empty(curr)) return NULL;
-	
-	while (!is_empty(curr->next)) {
-		curr = curr->next;
-	}
-
-	Node* prev = curr->prev;
-	if (is_empty(prev)) {
-		*linked_list = NULL;
-	} else {
-		prev->next = curr->next;
-		if (!is_empty(curr->next)) {
-			curr->next->prev = prev;
-		}
-	}
-	curr->prev = NULL;
-	return curr;
+void test_sort_vals() {
+    Node* head = create_node(3);
+    append_val(&head, 1);
+    append_val(&head, 2);
+    sort_vals(head);
+    printf("\n===============\nTest sort_vals: Expected (1, 2, 3), got\n");
+    print_nodes(head);
+    free(head->next->next);
+    free(head->next);
+    free(head);
 }
 
-void sort_vals(Node* head) {
-	bool is_sorted = false;
-	while (!is_sorted) {
-		is_sorted = true;
-		Node* curr = head;
-		while (!is_empty(curr->next)) {
-			if (curr->val > curr->next->val) {
-				int temp = curr->val;
-				curr->val = curr->next->val;
-				curr->next->val = temp;
-			} 	
-			curr = curr->next;
-		}
-	}
+void test_sort_nodes() {
+    Node* head = create_node(3);
+    append_val(&head, 1);
+    append_val(&head, 2);
+    sort_nodes(&head);
+    printf("\n===============\nTest sort_nodes: Expected (1, 2, 3), got\n");
+    print_nodes(head);
+    free(head->next->next);
+    free(head->next);
+    free(head);
 }
 
-void sort_nodes(Node** linked_list) {
-	bool is_sorted = false;
-	while (!is_sorted) {
-		is_sorted = true;
-		Node* curr = (Node*)*linked_list;
-		Node* prev = NULL;
-		while (!is_empty(curr->next)) {
-			if (curr->val > curr->next->val) {
-				Node* next = curr->next;
-				curr->next = next->next;
-				if (!is_empty(next->next)) {
-					next->next->prev = curr;
-				}
-
-				next->next = curr;
-				curr->prev = next;
-
-				if (prev == NULL) {
-					next->prev = NULL;
-					*linked_list = next;
-				} else {
-					prev->next = next;
-					next->prev = prev;
-				}
-				prev = next;
-				is_sorted = false;
-			} else {
-				prev = curr;
-				curr = curr->next;
-			}
-		}
-	}
+void test_count_nodes() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    append_val(&head, 3);
+    int count = count_nodes(head);
+    printf("\n===============\nTest count_nodes: Expected 3, got %d\n", count);
+    free(head->next->next);
+    free(head->next);
+    free(head);
 }
 
-bool is_empty(Node* head) {
-	return head == NULL;
+void test_find_by_value() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    Node* found = find_by_value(head, 2);
+    printf("\n===============\nTest find_by_value: Expected 2, got %d\n", found->val);
+    free(head->next);
+    free(head);
+}
+
+void test_get_node_at() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    Node* node = get_node_at(head, 1);
+    printf("\n===============\nTest get_node_at: Expected 2, got %d\n", node->val);
+    free(head->next);
+    free(head);
+}
+
+void test_find_middle() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    append_val(&head, 3);
+    Node* middle = find_middle(head);
+    printf("\n===============\nTest find_middle: Expected 2, got %d\n", middle->val);
+    free(head->next->next);
+    free(head->next);
+    free(head);
+}
+
+void test_clone_list() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    Node* clone = clone_list(head);
+    printf("\n===============\nTest clone_list: Expected (1, 2), got\n");
+    print_nodes(clone);
+    free(clone->next);
+    free(clone);
+    free(head->next);
+    free(head);
+}
+
+void test_merge_lists() {
+    Node* list1 = create_node(1);
+    append_val(&list1, 2);
+    Node* list2 = create_node(3);
+    merge_lists(&list1, &list2);
+    printf("\n===============\nTest merge_lists: Expected (1, 2, 3), got\n");
+    print_nodes(list1);
+    free(list1->next->next);
+    free(list1->next);
+    free(list1);
+}
+
+void test_reverse_list() {
+    Node* head = create_node(1);
+    append_val(&head, 2);
+    append_val(&head, 3);
+    reverse_list(&head);
+    printf("\n===============\nTest reverse_list: Expected (3, 2, 1), got\n");
+    print_nodes(head);
+    free(head->next->next);
+    free(head->next);
+    free(head);
 }
