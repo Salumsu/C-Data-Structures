@@ -96,7 +96,6 @@ void merge_sort(int* array, int size) {
 	
 }
 
-
 void _quick_sort(int* array, int pivot, int end) {
 	int store_index = pivot + 1;
 	for (int i = store_index; i < end; i++) {
@@ -148,4 +147,32 @@ void radix_sort(int* array, int size) {
 			}
 		}
 	}
+}
+
+int linear_search(int* array, int size, int val) {
+	for (int i = 0; i < size; i++) {
+		if (array[i] == val) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+int binary_search(int* array, int size, int val) {
+	int low = 0;
+	int high = size - 1;
+
+	while (high >= low) {
+		int mid = low + (high - low) / 2;
+		int mid_val = array[mid]; 
+		if (mid_val == val) {
+			return mid;
+		} else if (val > mid_val) {
+			low = mid + 1;
+		} else {
+			high = mid - 1;
+		}
+	}
+
+	return -1;
 }
