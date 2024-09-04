@@ -19,11 +19,11 @@ HashTable* create_table(size_t TABLE_SIZE) {
 	return hash_table;
 }
 
-unsigned long hash(char *str, size_t TABLE_SIZE) {
+unsigned long hash(char *key, size_t TABLE_SIZE) {
     unsigned long hash = 5381;
     int c;
 
-    while ((c = *str++)) {
+    while ((c = *key++)) {
         hash = ((hash << 5) + hash) + c;
     }
 
